@@ -1,0 +1,18 @@
+public class Drone : Vehicule
+{
+    private double maxDistance;
+
+    public override void Deliver (List <Package> packages)
+    {
+        foreach (Package p in packages)
+        {
+            if(p.isHeavy())
+            {
+                if (GetRemainingCapacity() < p.weight)
+                Console.WriteLine("Its too heavy");
+            }
+        }
+    }
+
+
+}
