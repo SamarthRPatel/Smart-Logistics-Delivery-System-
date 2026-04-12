@@ -43,10 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomQueue.cs" />
+    <Compile Include="CustomStack.cs" />
     <Compile Include="DeliverySystem.cs" />
     <Compile Include="Driver.cs" />
+    <Compile Include="EmptyStructureException.cs" />
+    <Compile Include="IFileHandler.cs" />
+    <Compile Include="InvalidDataException.cs" />
+    <Compile Include="IQueueable.cs" />
+    <Compile Include="ISortable.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Manager .cs" />
+    <Compile Include="OverCapacityException.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project_Warehouse
+{
+     interface IQueueable<T>
+    {
+        void Enqueue();
+        T Dequeue();
+        T Peek();
+        bool IsEmpty();
+
+    }
+}

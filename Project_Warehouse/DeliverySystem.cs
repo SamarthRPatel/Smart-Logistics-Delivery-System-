@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,7 +81,25 @@ namespace Project_Warehouse
             Console.WriteLine("Simulation finished.");
         }
 
+        public void Save(string path)
+        {
+            StreamWriter sw = new StreamWriter(path);
+            foreach (Package p in allPackages)
+            {
+                sw.WriteLine($"PAckage | {p.id} | {p.Weight} | {p.priorityLevel} " +
+                    $"| {p.destination} | {p.status}");
+            }
+            sw.Close();
+        }
 
+        public void Load(string path)
+        {
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("File not Found");
+                return;
+            }
+        }
 
 
 
