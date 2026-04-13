@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project_Warehouse
 {
-    internal interface ISortable
+    public interface ISortable
     {
         void Sort();
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Project_Warehouse
 {
-     class DeliverySystem
+     public class DeliverySystem : IFileHandler
      {
         public List<Warehouse> warehouse = new List<Warehouse>();
         public List<Package> allPackages = new List<Package>();
@@ -20,6 +20,9 @@ namespace Project_Warehouse
         public void AddPackage(Package p)
         {
             allPackages.Add(p);
+
+            if (warehouse.Count > 0)
+                warehouse[0].AddPackage(p);
         }
 
         public Package SearchPackageById(int id)
@@ -34,38 +37,47 @@ namespace Project_Warehouse
 
         public void SortPackages()
         {
-            for (int i = 0; i < allPackages.Count - 1; i++)
+            foreach (Warehouse w in warehouse)
             {
-                for (int j = 0; j < allPackages.Count - 1 - i; j++)
+                for (int i = 0; i < w.packages.Count - 1; i++)
                 {
-                    if (allPackages[j].CalculatePriorityScore() < allPackages[j + 1].CalculatePriorityScore())
+                    for (int j = 0; j < w.packages.Count - 1 - i; j++)
                     {
-                        Package temp = allPackages[i];
-                        allPackages[j] = allPackages[j + 1];
-                        allPackages[j + 1] = temp;
+                        if (w.packages[j].CalculatePriorityScore() > w.packages[j + 1].CalculatePriorityScore())
+                        {
+                            Package temp = w.packages[j];
+                            w.packages[j] = w.packages[j + 1];
+                            w.packages[j + 1] = temp;
+                        }
                     }
                 }
             }
+
+            Console.WriteLine("Packages sorted successfully.");
         }
 
         public void ProcessDeliveries()
         {
             foreach (Warehouse w in warehouse)
             {
-                List<Package> list = w.GetPendingPacakages();
+                List<Package> list = w.GetPendingPackages();
 
                 foreach (Package p in list)
                 {
-                    Vehicle v = w.FindBestVehicle(p);
+                    Vehicule v = w.FindBestVehicle(p);
                     Worker worker = w.AssignWorker();
 
                     if (v != null && worker != null)
                     {
-                        p.UpdateStatus("Package is Delivered");
-                        worker.Performtask();
+                        p.UpdateStatus("Delivered");
+                        worker.PerformTask();
                         v.currentLoad += p.Weight;
 
-                        Console.WriteLine($"Delivered Pac0kage {p.id}");
+                        Console.WriteLine($"Delivered Package {p.id}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Package {p.id} is not delivered");
                     }
                 }
             }
@@ -75,37 +87,113 @@ namespace Project_Warehouse
         {
             Console.WriteLine("Simulation Started");
 
-            SortPackages();
-            ProcessDeliveries();
+            SortPackages();           
+            ProcessDeliveries();     
 
             Console.WriteLine("Simulation finished.");
         }
 
         public void Save(string path)
         {
-            StreamWriter sw = new StreamWriter(path);
-            foreach (Package p in allPackages)
+            using (StreamWriter sw = new StreamWriter(path))
             {
-                sw.WriteLine($"PAckage | {p.id} | {p.Weight} | {p.priorityLevel} " +
-                    $"| {p.destination} | {p.status}");
+                foreach (Warehouse w in warehouse)
+                {
+                    // save details ofpackages
+                    foreach (Package p in w.packages)
+                    {
+                        sw.WriteLine($"Package :{p.id} | Weight:{p.Weight} Priority {p.priorityLevel} Status: {p.status}  ");
+                    }
+
+                    // save details of vehicles
+                    foreach (Vehicule v in w.vehicles)
+                    {
+                        string type = v.GetType().Name;
+
+                        sw.WriteLine($"Vehicle: {v.GetName()} Type: {type} Capacity: {v.maxCapacity}");
+                    }
+
+                    // save details of workers
+                    foreach (Worker worker in w.workers)
+                    {
+                        string type = worker.GetType().Name;
+
+                        sw.WriteLine($"Worker name : {worker.GetName()} Type: {type} Exp-Years:  {worker.experienceYears}");
+                    }
+                }
             }
-            sw.Close();
+            Console.WriteLine("Data saved successfully.");
         }
 
         public void Load(string path)
         {
             if (!File.Exists(path))
             {
-                Console.WriteLine("File not Found");
+                Console.WriteLine("File not found.");
                 return;
             }
+
+            Warehouse w = new Warehouse();
+            w.name = "Loaded Warehouse";
+
+            string[] lines = File.ReadAllLines(path);
+
+            foreach (string line in lines)
+            {
+                string[] p = line.Split('|');
+
+                // ++++++++Package++++
+                if (p[0] == "PACKAGE")
+                {
+                    Package pkg = new Package();
+                    pkg.id = int.Parse(p[1]);
+                    pkg.Weight = double.Parse(p[2]);
+                    pkg.priorityLevel = int.Parse(p[3]);
+                    pkg.destination = p[4];
+                    pkg.status = p[5];
+
+                    w.packages.Add(pkg);
+                }
+
+                // ++++++++Vehicule++++
+                else if (p[0] == "VEHICLE")
+                {
+                    Vehicule v = null;
+
+                    if (p[2] == "Truck") v = new Truck();
+                    else if (p[2] == "Van") v = new Van();
+                    else if (p[2] == "Drone") v = new Drone();
+
+                    if (v != null)
+                    {
+                        v.SetName(p[1]);
+                        v.SetCapacity(double.Parse(p[3]));
+                        w.vehicles.Add(v);
+                    }
+                }
+
+               // ++++++++Worker++++
+                else if (p[0] == "WORKER")
+                {
+                    Worker worker = null;
+
+                    if (p[2] == "Driver") worker = new Driver();
+                    else if (p[2] == "Loader") worker = new Loader();
+                    else if (p[2] == "Manager") worker = new Manager();
+
+                    if (worker != null)
+                    {
+                        worker.SetName(p[1]);
+                        worker.experienceYears = int.Parse(p[3]);
+                        w.workers.Add(worker);
+                    }
+                }
+            }
+
+            warehouse.Add(w);
+
+            Console.WriteLine("Data loaded successfully.");
         }
 
-
-
-
-
-
-
-     }
+    }
 }

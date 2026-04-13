@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project_Warehouse
 {
-    abstract class Worker : Entity
+    public abstract class Worker : Entity
     {
         public int experienceYears;
         public int tasksCompleted;
@@ -23,7 +23,7 @@ namespace Project_Warehouse
             return experienceYears + tasksCompleted; 
         }
 
-        public abstract void Performtask();
+        public abstract void PerformTask();
 
 
 

@@ -8,9 +8,9 @@ namespace Project_Warehouse
 {
     public class Manager : Worker
     {
-        public int teamsize;
+        public int TeamSize;
 
-        public override void Performtask()
+        public override void PerformTask()
         {
             Console.WriteLine("Manager is asking for Work");
 
@@ -23,7 +23,7 @@ namespace Project_Warehouse
             {
                 if(worker.isAvailable)
                 {
-                    if (best == null || worker.CalculatePerformance > best.CalculatePerformance())
+                    if (best == null || worker.CalculatePerformance() > best.CalculatePerformance())
                     {
                         best = worker;
                     }
@@ -32,6 +32,13 @@ namespace Project_Warehouse
             }
 
             return best;
+        }
+        public override void Display()
+        {
+            Console.WriteLine("Manager Details:");
+            Console.WriteLine("ID: " + id);
+            Console.WriteLine("Name: " + name);
+            Console.WriteLine("Team Size: " + TeamSize);
         }
     }
 }

@@ -8,15 +8,23 @@ namespace Project_Warehouse
 {
     public class Loader : Worker
      {
-        public double maxLififtWeight;
+        public double maxLiftWeight;
 
-        public override void Performtask()
+        public override void PerformTask()
         {
             Console.WriteLine("Loader is loading packages!");
-            AddTask();
+            addTask();
         }
 
-     }
+        public override void Display()
+        {
+            Console.WriteLine("Loader Details:");
+            Console.WriteLine("Name: " + name);
+            Console.WriteLine("ID: " + id);
+            Console.WriteLine("Max Lift Weight: " + maxLiftWeight);
+        }
+
+    }
     
 
     

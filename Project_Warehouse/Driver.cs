@@ -13,7 +13,15 @@ namespace Project_Warehouse
         public override void PerformTask()
         {
             Console.WriteLine("Driver is delivering!");
-            AddTask();
+            addTask();
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine("+++++++Driver Details+++++++:");
+            Console.WriteLine("Driver ID: " + id);
+            Console.WriteLine("Driver Name: " + name);
+            Console.WriteLine("License Type: " + licenseType);
         }
     }
 }

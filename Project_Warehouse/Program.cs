@@ -6,16 +6,38 @@ using System.Threading.Tasks;
 
 namespace Project_Warehouse
 {
-     class Program
+    public class Program
     {
         static void Main(string[] args)
         {
             DeliverySystem ds = new DeliverySystem();
             CustomStack<string> undoStack = new CustomStack<string>();
 
+            Warehouse w = new Warehouse();
+            w.name = "Main Warehouse";
+
+            ds.AddWarehouse(w);
+
+            //Truck t = new Truck();
+            //t.SetName("Truck1");
+            //t.SetCapacity(100);
+
+            Van v = new Van();
+            v.SetName("Van1");
+            v.SetCapacity(20);
+            v.isElectric = true;
+
+            Driver d = new Driver();
+            d.SetName("Driver1");
+            d.experienceYears = 5;
+            d.isAvailable = true;
+
+            w.vehicles.Add(v);
+            w.workers.Add(d);
+
             int choice = -1;
 
-            while (choice > 0) 
+            while (choice != 8) 
             {
                 Console.WriteLine("\n +++++ Welcome to Delivery System ++++++++");
                 Console.WriteLine("1 - Add Package");
@@ -71,7 +93,14 @@ namespace Project_Warehouse
 
                         case 3:
                         ds.SortPackages();
-                        Console.WriteLine("Sorted");
+                        foreach (Warehouse warehouse in ds.warehouse)
+                        {
+                            foreach (Package packages in w.packages)
+                            {
+                                Console.WriteLine($"ID: {packages.id}, Priority: {packages.priorityLevel}, Weight: {packages.Weight}");
+                            }
+                        }
+
 
                         break;
 
@@ -89,13 +118,19 @@ namespace Project_Warehouse
 
                         case 6:
                         ds.Save("data.txt");
-                        Console.WriteLine("Saved");
+                        Console.WriteLine("Data is Saved");
                         break;
 
                         case 7:
                         ds.Load("data.txt");
-                        Console.WriteLine("Loaded");
+                        Console.WriteLine("Data is Loaded");
                         break;
+
+                        case 8:
+                        Console.WriteLine("Exit");
+                        break;
+
+
 
 
                 }

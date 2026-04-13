@@ -6,16 +6,25 @@ using System.Threading.Tasks;
 
 namespace Project_Warehouse
 {
-     class Warehouse
+     public class Warehouse
     {
         public string name;
         public List<Package> packages = new List<Package>();
-        public List<Vehicle> vehicles = new List<Vehicle>();
+        public List<Vehicule> vehicles = new List<Vehicule>();
         public List<Worker> workers = new List<Worker>();
 
         public void AddPackage(Package p)
         {
-            packages.Add(p);
+            foreach (Vehicule v in vehicles)
+            {
+                if (v.GetRemainingCapacity() >= p.Weight)
+                {
+                    packages.Add(p);
+                    return;
+                }
+            }
+
+            Console.WriteLine("Package too heavy for all vehicles!");
         }
 
         public void RemovePackage(int id)
@@ -31,16 +40,20 @@ namespace Project_Warehouse
             }
         }
 
-        public Vehicle FindBestVehicle(Package p)
+        public Vehicule FindBestVehicle(Package p)
         {
-            Vehicles best = null;
+            Vehicule best = null;
 
-            foreach (Vehicle v in vehicles) 
+            foreach (Vehicule v in vehicles) 
             {
-                if (v.isAvailable && v.GetRemainingCapacity() >= p.weight)
+                if (v.IsAvailable() && v.GetRemainingCapacity() >= p.Weight)
                 {
-                    if (best == null || v.CalculateEfficiency() > best.CalculateEfficienciy())
+                    if (best == null || v.CalculateEfficiency() > best.CalculateEfficiency())
+                    {
                         best = v;
+                    }
+
+                   
                 }
 
             }
@@ -58,7 +71,7 @@ namespace Project_Warehouse
             return null;
         }
 
-        public List<Package> GetPendingPacakages()
+        public List<Package> GetPendingPackages()
         {
             List<Package> list = new List<Package>();
             foreach (Package p in packages)

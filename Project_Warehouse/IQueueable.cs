@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Project_Warehouse
 {
-     interface IQueueable<T>
+    public interface IQueueable<T>
     {
-        void Enqueue();
+        void Enqueue(T item);
         T Dequeue();
         T Peek();
         bool IsEmpty();
